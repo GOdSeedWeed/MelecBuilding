@@ -7,35 +7,61 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 <style>
 :root {
-  --primary-bg: linear-gradient(135deg,#4da0ff,#0072ff);
+  --primary-bg: #4da0ff;
   --secondary-bg: #f5f5f5;
   --text-color: #111;
-  --footer-bg: linear-gradient(135deg,#4da0ff,#0072ff);
-  --shadow-color: rgba(0,123,255,0.6);
+  --footer-bg: #4da0ff;
+  --shadow-color: rgba(0,123,255,0.4);
 }
 body.dark {
-  --primary-bg: linear-gradient(135deg,#222,#111);
+  --primary-bg: #222;
   --secondary-bg: #111;
   --text-color: #eee;
-  --footer-bg: linear-gradient(135deg,#222,#111);
-  --shadow-color: rgba(0,255,255,0.6);
+  --footer-bg: #222;
+  --shadow-color: rgba(0,255,255,0.4);
 }
 * {margin:0;padding:0;box-sizing:border-box;}
-body {font-family: Arial,sans-serif; color: var(--text-color); background: var(--secondary-bg); transition: background 0.3s, color 0.3s;}
-header, footer {position:sticky; color:#fff; display:flex; align-items:center; justify-content:space-between; padding:1rem; z-index:999; border-radius:0.5rem; box-shadow:0 0 20px var(--shadow-color);}
-header {top:0; background: var(--primary-bg);}
-footer {bottom:0; background: var(--footer-bg);}
+body {font-family: Arial,sans-serif; color: var(--text-color); background: var(--secondary-bg); transition: all 0.3s;}
+header, footer {position:sticky; display:flex; align-items:center; justify-content:space-between; padding:1rem; z-index:999; background: var(--primary-bg); border-radius:0.3rem; box-shadow:0 0 10px var(--shadow-color);}
+header {top:0;}
+footer {bottom:0;}
 main {padding:6rem 1rem 4rem; min-height:calc(100vh - 10rem);}
 nav ul {display:flex; gap:1rem; list-style:none;}
 nav li {cursor:pointer; text-shadow:0 0 5px var(--shadow-color);}
-.toggle-btn {cursor:pointer; display:none;}
 .hamburger {display:none; font-size:1.5rem; cursor:pointer;}
 .page {display:none; animation:fadein 0.5s;}
 .page.active {display:block;}
-.footer-icons {display:flex; gap:1rem;}
-.footer-icons a {color:#fff; font-size:1.5rem; display:flex; align-items:center; justify-content:center; width:50px; height:50px; border-radius:50%; background:var(--text-color); box-shadow:0 0 15px var(--shadow-color);}
+.footer-icons {display:flex; justify-content:center; gap:1rem; width:100%;}
+.footer-icons a {color:#fff; font-size:1.5rem; display:flex; align-items:center; justify-content:center; width:50px; height:50px; border-radius:50%; background:var(--text-color); box-shadow:0 0 10px var(--shadow-color);}
 .locale-btn, .theme-btn {margin-left:1rem; cursor:pointer; text-shadow:0 0 5px var(--shadow-color);}
 @keyframes fadein {from{opacity:0;} to{opacity:1;}}
+/* Services cards */
+.services-container {
+  display:flex;
+  flex-wrap:wrap;
+  gap:1rem;
+  justify-content:center;
+  margin-top:2rem;
+}
+.service-card {
+  flex:1 1 200px;
+  min-width:180px;
+  max-width:220px;
+  height:120px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:1.5rem;
+  color:#fff;
+  font-weight:bold;
+  text-align:center;
+  box-shadow:0 0 10px var(--shadow-color);
+  transition:transform 0.3s, box-shadow 0.3s;
+}
+.service-card:hover {
+  transform:translateY(-5px);
+  box-shadow:0 0 20px var(--shadow-color);
+}
 @media (max-width:768px){
   nav ul {display:none; flex-direction:column; position:absolute; top:4rem; left:0; background: var(--primary-bg); width:100%; padding:1rem; border-radius:0 0 1rem 1rem;}
   nav ul.show {display:flex;}
@@ -64,7 +90,13 @@ body[dir="rtl"] {direction: rtl;}
 <main>
   <section id="services" class="page active">
     <h1>Our Services</h1>
-    <p>We offer top-notch electrical installations, maintenance, and emergency repairs. Safe, fast, and efficient service guaranteed.</p>
+    <div class="services-container">
+      <div class="service-card" style="background:linear-gradient(145deg,#4da0ff,#80c0ff)">Electrical Installations</div>
+      <div class="service-card" style="background:linear-gradient(145deg,#ff7e5f,#ffb07c)">Maintenance & Repairs</div>
+      <div class="service-card" style="background:linear-gradient(145deg,#7cff8f,#4cff7a)">Emergency Services</div>
+      <div class="service-card" style="background:linear-gradient(145deg,#ffd700,#ffc700)">Lighting Solutions</div>
+      <div class="service-card" style="background:linear-gradient(145deg,#d68cff,#b062ff)">Smart Home Install</div>
+    </div>
   </section>
   <section id="about" class="page">
     <h1>About Us</h1>
@@ -99,6 +131,7 @@ const savedTheme = localStorage.getItem('theme') || 'light';
 const savedLocale = localStorage.getItem('locale') || 'fr';
 document.body.classList.toggle('dark', savedTheme === 'dark');
 applyLocale(savedLocale);
+document.body.setAttribute('dir', savedLocale==='ar'?'rtl':'ltr');
 
 // Page navigation
 navItems.forEach(item => {
