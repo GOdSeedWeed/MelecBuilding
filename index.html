@@ -7,39 +7,42 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 <style>
 :root {
-  --primary-bg: #1a73e8;
-  --secondary-bg: #ffffff;
+  --primary-bg: linear-gradient(135deg,#4da0ff,#0072ff);
+  --secondary-bg: #f5f5f5;
   --text-color: #111;
-  --footer-bg: #1a73e8;
+  --footer-bg: linear-gradient(135deg,#4da0ff,#0072ff);
+  --shadow-color: rgba(0,123,255,0.6);
 }
 body.dark {
-  --primary-bg: #111;
-  --secondary-bg: #222;
+  --primary-bg: linear-gradient(135deg,#222,#111);
+  --secondary-bg: #111;
   --text-color: #eee;
-  --footer-bg: #000;
+  --footer-bg: linear-gradient(135deg,#222,#111);
+  --shadow-color: rgba(0,255,255,0.6);
 }
 * {margin:0;padding:0;box-sizing:border-box;}
-body {font-family: Arial,sans-serif; color: var(--text-color); background: var(--secondary-bg);}
-header, footer {position:sticky; background: var(--primary-bg); color:#fff; display:flex; align-items:center; justify-content:space-between; padding:1rem;}
-header {top:0;}
-footer {bottom:0;}
-main {padding: 6rem 1rem 4rem; min-height: calc(100vh - 10rem);}
+body {font-family: Arial,sans-serif; color: var(--text-color); background: var(--secondary-bg); transition: background 0.3s, color 0.3s;}
+header, footer {position:sticky; color:#fff; display:flex; align-items:center; justify-content:space-between; padding:1rem; z-index:999; border-radius:0.5rem; box-shadow:0 0 20px var(--shadow-color);}
+header {top:0; background: var(--primary-bg);}
+footer {bottom:0; background: var(--footer-bg);}
+main {padding:6rem 1rem 4rem; min-height:calc(100vh - 10rem);}
 nav ul {display:flex; gap:1rem; list-style:none;}
-nav li {cursor:pointer;}
+nav li {cursor:pointer; text-shadow:0 0 5px var(--shadow-color);}
 .toggle-btn {cursor:pointer; display:none;}
 .hamburger {display:none; font-size:1.5rem; cursor:pointer;}
-.page {display:none;}
-.page.active {display:block; animation:fadein 0.3s;}
-@keyframes fadein {from{opacity:0;} to{opacity:1;}}
+.page {display:none; animation:fadein 0.5s;}
+.page.active {display:block;}
 .footer-icons {display:flex; gap:1rem;}
-.footer-icons a {color:#fff; font-size:1.5rem; display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:50%; background:#333;}
-.locale-btn, .theme-btn {margin-left:1rem; cursor:pointer;}
+.footer-icons a {color:#fff; font-size:1.5rem; display:flex; align-items:center; justify-content:center; width:50px; height:50px; border-radius:50%; background:var(--text-color); box-shadow:0 0 15px var(--shadow-color);}
+.locale-btn, .theme-btn {margin-left:1rem; cursor:pointer; text-shadow:0 0 5px var(--shadow-color);}
+@keyframes fadein {from{opacity:0;} to{opacity:1;}}
 @media (max-width:768px){
-  nav ul {display:none; flex-direction:column; position:absolute; top:4rem; left:0; background: var(--primary-bg); width:100%; padding:1rem;}
+  nav ul {display:none; flex-direction:column; position:absolute; top:4rem; left:0; background: var(--primary-bg); width:100%; padding:1rem; border-radius:0 0 1rem 1rem;}
   nav ul.show {display:flex;}
   .hamburger {display:block;}
   .locale-btn, .theme-btn {margin:0.5rem 0;}
 }
+body[dir="rtl"] {direction: rtl;}
 </style>
 </head>
 <body>
@@ -122,6 +125,7 @@ localeBtns.forEach(btn => {
     const loc = btn.dataset.locale;
     localStorage.setItem('locale', loc);
     applyLocale(loc);
+    document.body.setAttribute('dir', loc==='ar'?'rtl':'ltr');
     if(window.innerWidth <= 768) navUl.classList.remove('show');
   });
 });
