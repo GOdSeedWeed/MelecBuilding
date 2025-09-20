@@ -1,592 +1,828 @@
 <!doctype html>
-<html lang="fr">
+<html lang="fr" translate="no">
+
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Melec Building — Electrical Services</title>
-
-  <!-- Inter + Font Awesome -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
-  <style>
-    :root{
-      --header-h:72px;
-      --footer-h:110px;
-      --accent: #2ea1ff;
-      --bg1-dark: #0c0d10;
-      --bg2-dark: #16171a;
-      --bg1-light: #f6f8fb;
-      --bg2-light: #eef3fb;
-      --fg-dark: #ffffff;
-      --fg-light: #0b1220;
-      --icon-size-min:56px;
-    }
-
-    /* Base theme: dark by default. Light theme toggles .light on body */
-    html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial; -webkit-font-smoothing:antialiased;}
-    body{
-      height:100vh;
-      display:flex;
-      flex-direction:column;
-      background: linear-gradient(135deg, var(--bg1-dark), var(--bg2-dark));
-      color:var(--fg-dark);
-      overflow:hidden; /* only main scrolls */
-    }
-    body.light{
-      background: linear-gradient(135deg, var(--bg1-light), var(--bg2-light));
-      color:var(--fg-light);
-    }
-
-    /* Header: sticky top (fixed-like behavior), slight nuance from main bg */
-    header{
-      position:sticky;
-      top:0;
-      left:0;
-      right:0;
-      height:var(--header-h);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      padding:12px 20px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      z-index:1000;
-      backdrop-filter: blur(6px);
-    }
-
-    .logo{font-weight:800; letter-spacing:1px; color:var(--accent); font-size:1.05rem}
-
-    /* Header center nav */
-    .header-center{flex:1; display:flex; justify-content:center}
-    nav{display:flex; align-items:center}
-    ul.nav-desktop{display:flex; gap:28px; list-style:none; margin:0; padding:0; align-items:center}
-    ul.nav-desktop a{color:inherit; text-decoration:none; font-weight:700; padding:8px 6px; border-radius:8px}
-    ul.nav-desktop a:focus, ul.nav-desktop a:hover{background: rgba(255,255,255,0.02)}
-
-    /* Desktop controls (theme + lang) */
-    .controls-desktop{display:flex; align-items:center; gap:8px}
-    .btn-circle{
-      display:inline-flex; align-items:center; justify-content:center;
-      border-radius:50%; border:0; cursor:pointer;
-      width:44px; height:44px; font-weight:700;
-      background:transparent; color:inherit;
-    }
-    .btn-ghost{
-      padding:8px 10px; border-radius:10px; border:0; cursor:pointer; font-weight:700; background:transparent; color:inherit;
-    }
-
-    /* Hamburger */
-    .hamburger{display:none; border:0; background:transparent; cursor:pointer; padding:8px}
-    .hamburger .bar{width:26px; height:3px; background:currentColor; border-radius:3px; display:block; margin:3px 0}
-
-    /* Main - fills between header & footer and is the only scrollable area */
-    main{
-      margin-top:var(--header-h);
-      margin-bottom:var(--footer-h);
-      height:calc(100vh - var(--header-h) - var(--footer-h));
-      overflow-y:auto;
-      -ms-overflow-style: none;  /* IE/Edge */
-      scrollbar-width: none;     /* Firefox */
-      scroll-behavior: smooth;
-      padding:28px 20px;
-      max-width:1100px;
-      width:100%;
-      margin-left:auto;
-      margin-right:auto;
-    }
-    main::-webkit-scrollbar{ display: none; } /* Chrome/Safari */
-
-    /* Ensure sections won't be hidden under fixed header when scrolled to */
-    section { scroll-margin-top: calc(var(--header-h) + 10px) }
-
-    /* Content cards */
-    .hero{min-height:48vh; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; text-align:center; border-radius:12px; padding:36px; background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent); box-shadow: 0 12px 40px rgba(0,0,0,0.18)}
-    .hero h1{font-size:clamp(28px, 6vw, 48px); margin:0; letter-spacing:1px}
-    .muted{color:rgba(255,255,255,0.65)} body.light .muted{color:rgba(0,0,0,0.55)}
-
-    .card{background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent); padding:20px; border-radius:12px; margin-bottom:18px; color:var(--muted);}
-
-    /* Services grid */
-    .services-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px; margin-top:12px}
-    .service-item{padding:14px; border-radius:10px; background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
-
-    /* Footer - sticky bottom with same nuance but darker overlay */
-    footer{
-      position:sticky;
-      bottom:0;
-      left:0;
-      right:0;
-      height:var(--footer-h);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      padding:14px 20px;
-      background: linear-gradient(180deg, rgba(0,0,0,0.05), rgba(255,255,255,0.01));
-      z-index:900;
-    }
-
-    .footer-left{display:flex; flex-direction:column; gap:6px}
-    .footer-right{min-width:160px; text-align:right; color:var(--muted)}
-
-    /* Footer icons: filled & bold */
-    .footer-icons{display:flex; gap:18px; align-items:center; justify-content:center; flex-wrap:nowrap; overflow:hidden}
-    .circle-icon{
-      flex: 0 1 auto;
-      width: clamp(var(--icon-size-min), 10vw, 84px);
-      height: clamp(var(--icon-size-min), 10vw, 84px);
-      border-radius:50%;
-      display:inline-flex; align-items:center; justify-content:center;
-      font-size: clamp(18px, 4vw, 28px);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-      cursor:pointer;
-      transition: transform .15s ease, opacity .12s;
-      border:0;
-    }
-    /* Icon colors invert depending on theme */
-    body:not(.light) .circle-icon{ background: #fff; color:#111; }
-    body.light .circle-icon{ background: #111; color:#fff; }
-
-    .circle-icon:active{ transform:translateY(1px) }
-    .circle-icon:hover{ transform:translateY(-6px) }
-
-    /* mobile menu panel (appears under header) */
-    .mobile-panel{
-      display:none;
-      position:fixed;
-      top: calc(var(--header-h) + 8px);
-      right: 12px;
-      z-index:1200;
-      min-width: 240px;
-      max-width: 92vw;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius:12px;
-      padding:12px;
-      box-shadow: 0 22px 60px rgba(0,0,0,0.5);
-      overflow: hidden;
-    }
-    .mobile-panel.show{ display:block; }
-
-    .mobile-panel a{ display:block; padding:12px 8px; color:inherit; font-weight:700; text-decoration:none; border-radius:8px }
-    .mobile-panel a:hover{ background: rgba(255,255,255,0.02) }
-
-    .mobile-controls{ display:flex; gap:8px; margin-top:8px; }
-
-    /* hide desktop nav + controls on small screens */
-    @media (max-width:820px){
-      ul.nav-desktop{ display:none; }
-      .controls-desktop{ display:none; }
-      .hamburger{ display:block; }
-      /* mobile panel shade tweak in light mode */
-      body.light .mobile-panel{ background: linear-gradient(180deg, rgba(0,0,0,0.03), rgba(0,0,0,0.01)); color:var(--fg-light); }
-    }
-
-    /* tiny screens adjustments */
-    @media (max-width:420px){
-      .hero{ padding:22px }
-      .footer-left{ display:none }
-      .footer-right{ text-align:center; width:100% }
-      .mobile-panel{ right: 8px; left:8px; min-width:auto }
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <div class="logo">MELEC</div>
-
-    <div class="header-center">
-      <nav aria-label="Main">
-        <ul class="nav-desktop" role="menubar" id="navDesktop">
-          <li><a href="#home" class="nav-link" data-route="home" data-i18n="nav.home">Accueil</a></li>
-          <li><a href="#services" class="nav-link" data-route="services" data-i18n="nav.services">Nos Services</a></li>
-          <li><a href="#about" class="nav-link" data-route="about" data-i18n="nav.about">À Propos</a></li>
-          <li><a href="#contact" class="nav-link" data-route="contact" data-i18n="nav.contact">Contact</a></li>
-        </ul>
-      </nav>
-    </div>
-
-    <div class="controls-desktop" aria-hidden="false">
-      <button id="themeToggle" class="btn-circle" title="Toggle theme" aria-label="Toggle theme"><i id="themeIcon" class="fas fa-moon"></i></button>
-
-      <button class="btn-ghost lang-btn" data-lang="fr" aria-label="French">FR</button>
-      <button class="btn-ghost lang-btn" data-lang="en" aria-label="English">EN</button>
-      <button class="btn-ghost lang-btn" data-lang="ar" aria-label="Arabic">AR</button>
-
-      <button id="hamburgerBtn" class="hamburger" aria-label="Open menu" aria-expanded="false" title="Menu">
-        <span class="bar"></span><span class="bar"></span><span class="bar"></span>
-      </button>
-    </div>
-
-    <!-- mobile menu panel that contains nav + mobile controls (theme + lang) -->
-    <div id="mobilePanel" class="mobile-panel" aria-hidden="true" role="dialog" aria-label="Mobile menu">
-      <a href="#home" class="mobile-link" data-route="home" data-i18n="nav.home">Accueil</a>
-      <a href="#services" class="mobile-link" data-route="services" data-i18n="nav.services">Nos Services</a>
-      <a href="#about" class="mobile-link" data-route="about" data-i18n="nav.about">À Propos</a>
-      <a href="#contact" class="mobile-link" data-route="contact" data-i18n="nav.contact">Contact</a>
-
-      <div class="mobile-controls" style="margin-top:10px;">
-        <button id="themeToggleMobile" class="btn-circle" title="Toggle theme" aria-label="Toggle theme (mobile)">🌙</button>
-
-        <button class="btn-circle mobile-lang" data-lang="fr" aria-label="French">FR</button>
-        <button class="btn-circle mobile-lang" data-lang="en" aria-label="English">EN</button>
-        <button class="btn-circle mobile-lang" data-lang="ar" aria-label="Arabic">AR</button>
-      </div>
-    </div>
-  </header>
-
-  <main id="appMain" tabindex="0">
-    <!-- Home -->
-    <section id="home" class="hero">
-      <h1 data-i18n="hero.title">MELEC BUILDING</h1>
-      <p class="muted" data-i18n="hero.sub">Services électriques professionnels — installations, maintenance et sécurité pour particuliers et entreprises.</p>
-
-      <div style="display:flex; gap:12px; margin-top:14px; justify-content:center; flex-wrap:wrap;">
-        <a class="btn-circle" href="#contact" onclick="scrollToSection('contact')" style="min-width:160px;">Demandez un devis</a>
-        <a class="btn-circle" href="#services" onclick="scrollToSection('services')" style="min-width:160px; background:var(--accent); color:#fff;">Voir nos services</a>
-      </div>
-    </section>
-
-    <!-- Services -->
-    <section id="services" class="card" aria-labelledby="servicesTitle">
-      <h2 id="servicesTitle" data-i18n="services.title">Nos Services</h2>
-      <p data-i18n="services.intro">Nous couvrons tous vos besoins électriques, du résidentiel au commercial, avec sécurité et efficacité.</p>
-
-      <div class="services-grid" id="servicesGrid"></div>
-    </section>
-
-    <!-- About -->
-    <section id="about" class="card" aria-labelledby="aboutTitle">
-      <h2 id="aboutTitle" data-i18n="about.title">À propos de nous</h2>
-      <p id="aboutText" data-i18n="about.text">Melec Building réunit une équipe d'électriciens certifiés, dédiée à la sécurité, la qualité et la transparence.</p>
-
-      <div style="display:flex; gap:12px; margin-top:14px; flex-wrap:wrap;">
-        <div style="flex:1; min-width:220px">
-          <h4 data-i18n="about.missionTitle">Notre mission</h4>
-          <p data-i18n="about.mission">Fournir des solutions électriques sûres, économes en énergie et adaptées à chaque projet.</p>
-        </div>
-        <div style="flex:1; min-width:220px">
-          <h4 data-i18n="about.teamTitle">Notre équipe</h4>
-          <p data-i18n="about.team">Techniciens certifiés, chefs de projet et support client réactif — prêts 24/7 pour les urgences.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Contact -->
-    <section id="contact" class="card" aria-labelledby="contactTitle">
-      <h2 id="contactTitle" data-i18n="contact.title">Contactez-nous</h2>
-      <p id="contactText" data-i18n="contact.text">Appelez-nous ou envoyez un message — on vous répond rapidement.</p>
-
-      <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:12px;">
-        <div style="flex:1; min-width:260px;">
-          <form id="contactForm" class="contact" aria-label="Contact form">
-            <input id="cname" required placeholder="Votre nom" />
-            <input id="cemail" type="email" required placeholder="Votre email" />
-            <textarea id="cmessage" rows="5" required placeholder="Message"></textarea>
-            <div style="display:flex; gap:8px; margin-top:8px;">
-              <button type="submit" class="btn-circle" style="min-width:110px">Envoyer</button>
-              <a href="tel:+212 0661661294" class="btn-circle" style="min-width:110px" aria-label="Call"><i class="fas fa-phone"></i></a>
-            </div>
-          </form>
-        </div>
-
-        <div style="flex:1; min-width:240px; color:var(--muted);">
-          <strong data-i18n="contact.infoTitle">Infos</strong>
-          <p style="margin:8px 0" data-i18n="contact.address">Casablanca, Maroc — <a href="https://maps.app.goo.gl/ikg8DnRbzTjawiR69" target="_blank" style="color:var(--accent)">Voir sur la carte</a></p>
-          <p><span data-i18n="contact.phoneLabel">Téléphone:</span> <a href="tel:+2120661661294" style="color:inherit">+212 0 66 16 12 94</a></p>
-          <p><span data-i18n="contact.hours">Horaires:</span> Lun–Dim: 08:00–20:00 (urgence 24/7)</p>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="footer-left">
-      <div style="font-weight:800; color:var(--accent)">Melec Building</div>
-      <div style="color:var(--muted)">Électriciens certifiés — Qualité & sécurité</div>
-    </div>
-
-    <div class="footer-icons" role="toolbar" aria-label="Contact icons">
-      <a class="circle-icon" href="mailto:info@melec.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
-      <a class="circle-icon" href="tel:+2120661661294" aria-label="Phone"><i class="fas fa-phone"></i></a>
-      <a class="circle-icon" href="https://maps.app.goo.gl/ikg8DnRbzTjawiR69" target="_blank" aria-label="Location"><i class="fas fa-map-marker-alt"></i></a>
-      <a class="circle-icon" href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-      <a class="circle-icon" href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-    </div>
-
-    <div class="footer-right">
-      <small style="color:var(--muted)">© <span id="year"></span> Melec Building</small>
-    </div>
-  </footer>
-
-  <script>
-    /* ========== Translations (nested) ========== */
-    const translations = {
-      fr: {
-        nav:{home:'Accueil', services:'Nos Services', about:'À Propos', contact:'Contact'},
-        hero:{title:'MELEC BUILDING', sub:'Services électriques professionnels — installations, maintenance et sécurité pour particuliers et entreprises.'},
-        services:{title:'Nos Services', intro:'Nous couvrons tous vos besoins électriques, du résidentiel au commercial, avec sécurité et efficacité.',
-          items:[
-            {title:'Câblage résidentiel', desc:'Installation, rénovation et mise à la terre pour la sécurité de votre foyer.'},
-            {title:'Installations commerciales', desc:'Tableaux, câblage industriel et conformité aux normes.'},
-            {title:'Éclairage LED', desc:'Conception et optimisation énergétique pour réduction des coûts.'},
-            {title:'Maintenance & dépannage', desc:'Interventions rapides et sûres pour vos urgences électriques.'}
-        ]},
-        about:{title:'À propos de nous', text:'Melec Building réunit une équipe d&#39;électriciens certifiés, dédiée à la sécurité, la qualité et la transparence.', missionTitle:'Notre mission', mission:'Fournir des solutions électriques sûres, économes en énergie et adaptées à chaque projet.', teamTitle:'Notre équipe', team:'Techniciens certifiés, chefs de projet et support client réactif.'},
-        contact:{title:'Contactez-nous', text:'Appelez-nous ou envoyez un message — on vous répond rapidement.', infoTitle:'Infos', address:'Casablanca, Maroc', phoneLabel:'Téléphone:', hours:'Horaires:'}
-      },
-      en: {
-        nav:{home:'Home', services:'Our Services', about:'About', contact:'Contact'},
-        hero:{title:'MELEC BUILDING', sub:'Professional electrical services — installations, maintenance and safety for homes & businesses.'},
-        services:{title:'Our Services', intro:'We cover all electrical needs — residential to commercial — with safety and efficiency.',
-          items:[
-            {title:'Residential Wiring', desc:'Installation, rewiring and earthing for household safety.'},
-            {title:'Commercial Installations', desc:'Panels, industrial wiring and compliance.'},
-            {title:'LED Lighting', desc:'Energy-optimised lighting design & installation.'},
-            {title:'24/7 Repairs', desc:'Rapid, secure interventions for electrical emergencies.'}
-        ]},
-        about:{title:'About Us', text:'Melec Building brings together certified electricians committed to safety, quality and transparency.', missionTitle:'Our mission', mission:'Deliver reliable, energy-efficient electrical solutions tailored to every project.', teamTitle:'Our team', team:'Certified technicians, project leads and responsive customer support.'},
-        contact:{title:'Contact Us', text:'Call or message us — we’ll get back to you quickly.', infoTitle:'Info', address:'Casablanca, Morocco', phoneLabel:'Phone:', hours:'Hours:'}
-      },
-      ar: {
-        nav:{home:'الرئيسية', services:'خدماتنا', about:'معلومات عنا', contact:'اتصل بنا'},
-        hero:{title:'MELEC BUILDING', sub:'خدمات كهربائية احترافية — تركيبات وصيانة وأمان للمنازل والشركات.'},
-        services:{title:'خدماتنا', intro:'نغطي جميع احتياجاتك الكهربائية، من السكنية إلى التجارية، بأعلى معايير الأمان.',
-          items:[
-            {title:'التوصيلات السكنية', desc:'تركيب وتجديد وتأريض لضمان أمان منزلك.'},
-            {title:'التركيبات التجارية', desc:'لوحات وكابلات صناعية والتزام بالمعايير.'},
-            {title:'إضاءة LED', desc:'تصميم وتركيب أنظمة إضاءة موفرة للطاقة.'},
-            {title:'خدمة الطوارئ 24/7', desc:'استجابة سريعة وآمنة لحالات الطوارئ الكهربائية.'}
-        ]},
-        about:{title:'معلومات عنا', text:'Melec Building فريق من الفنيين المعتمدين ملتزمون بالأمان والجودة والشفافية.', missionTitle:'مهمتنا', mission:'تقديم حلول كهربائية آمنة وموفرة للطاقة ومصممة لكل مشروع.', teamTitle:'فريقنا', team:'فنيون معتمدون، رؤساء مشاريع ودعم عملاء سريع.'},
-        contact:{title:'اتصل بنا', text:'اتصل بنا أو أرسل رسالة — سنعود إليك بسرعة.', infoTitle:'معلومات', address:'الدار البيضاء، المغرب', phoneLabel:'الهاتف:', hours:'ساعات العمل:'}
-      }
-    };
-
-    /* ========== Utilities ========== */
-    function deepGet(obj, path){
-      if(!obj || !path) return undefined;
-      return path.split('.').reduce((o,k)=> (o && o[k] !== undefined) ? o[k] : undefined, obj);
-    }
-
-    const LS_LANG = 'melec_lang';
-    const LS_THEME = 'melec_theme';
-    const mainEl = document.getElementById('appMain');
-    const mobilePanel = document.getElementById('mobilePanel');
-    const hamburgerBtn = document.getElementById('hamburgerBtn');
-
-    /* ========== Apply translations ========== */
-    function applyTranslations(lang){
-      const t = translations[lang] || translations.fr;
-      // update simple data-i18n keys
-      document.querySelectorAll('[data-i18n]').forEach(el=>{
-        const key = el.getAttribute('data-i18n');
-        const val = deepGet(t, key);
-        if(val !== undefined) el.textContent = val;
-      });
-
-      // fill services grid
-      const grid = document.getElementById('servicesGrid');
-      grid.innerHTML = '';
-      const items = deepGet(t, 'services.items') || [];
-      items.forEach(it=>{
-        const d = document.createElement('div');
-        d.className = 'service-item';
-        d.innerHTML = `<h4>${it.title}</h4><p style="margin:6px 0 0;color:var(--muted);font-size:0.95rem">${it.desc}</p>`;
-        grid.appendChild(d);
-      });
-
-      // Update nav labels (desktop & mobile)
-      document.querySelectorAll('.nav-link').forEach(a=>{
-        const route = a.dataset.route;
-        const key = `nav.${route}`;
-        const v = deepGet(t, key);
-        if(v) a.textContent = v;
-      });
-      document.querySelectorAll('.mobile-link').forEach(a=>{
-        const route = a.dataset.route;
-        const key = `nav.${route}`;
-        const v = deepGet(t, key);
-        if(v) a.textContent = v;
-      });
-
-      // set HTML lang + dir
-      document.documentElement.lang = lang;
-      document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
-
-      // set document.title
-      document.title = deepGet(t, 'hero.title') || 'Melec Building';
-    }
-
-    /* ========== Theme Handling ========== */
-    const themeIcon = document.getElementById('themeIcon');
-    function setTheme(theme){
-      if(theme === 'light'){
-        document.body.classList.add('light');
-        themeIcon.className = 'fas fa-sun';
-        const mobIcon = document.getElementById('themeToggleMobile');
-        if(mobIcon) mobIcon.textContent = '☀️';
-      } else {
-        document.body.classList.remove('light');
-        themeIcon.className = 'fas fa-moon';
-        const mobIcon = document.getElementById('themeToggleMobile');
-        if(mobIcon) mobIcon.textContent = '🌙';
-      }
-      localStorage.setItem(LS_THEME, theme);
-    }
-
-    /* ========== Language Handling ========== */
-    function setLang(lang){
-      localStorage.setItem(LS_LANG, lang);
-      // visually mark buttons
-      document.querySelectorAll('.lang-btn').forEach(b=> b.classList.toggle('active', b.dataset.lang === lang));
-      document.querySelectorAll('.mobile-lang').forEach(b=> b.classList.toggle('active', b.dataset.lang === lang));
-      applyTranslations(lang);
-    }
-
-    /* ========== Scroll helpers ========== */
-    function scrollToSection(id){
-      const el = document.getElementById(id);
-      if(!el) return;
-      // scroll within main container
-      el.scrollIntoView({behavior:'smooth', block:'start', inline:'nearest'});
-      // if mobile panel open, close it
-      closeMobilePanel();
-    }
-
-    /* ========== Mobile panel open/close ========= */
-    function openMobilePanel(){
-      mobilePanel.classList.add('show');
-      mobilePanel.setAttribute('aria-hidden','false');
-      hamburgerBtn.setAttribute('aria-expanded','true');
-    }
-    function closeMobilePanel(){
-      mobilePanel.classList.remove('show');
-      mobilePanel.setAttribute('aria-hidden','true');
-      hamburgerBtn.setAttribute('aria-expanded','false');
-    }
-    function toggleMobilePanel(){
-      const is = mobilePanel.classList.toggle('show');
-      mobilePanel.setAttribute('aria-hidden', String(!is));
-      hamburgerBtn.setAttribute('aria-expanded', String(is));
-    }
-
-    // Hook up hamburger button
-    document.getElementById('hamburgerBtn').addEventListener('click', (e)=>{
-      e.stopPropagation();
-      toggleMobilePanel();
-    });
-
-    // close panel on outside click
-    document.addEventListener('click', (e)=>{
-      const panel = mobilePanel;
-      if(panel.classList.contains('show')){
-        if(!panel.contains(e.target) && !hamburgerBtn.contains(e.target)){
-          closeMobilePanel();
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Melec Building — Electrical Services</title>
+    <!-- Inter + Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        :root {
+            --header-h: 72px;
+            --footer-h: 110px;
+            --accent: #2ea1ff;
+            --bg1-dark: #0c0d10;
+            --bg2-dark: #16171a;
+            --bg1-light: #f6f8fb;
+            --bg2-light: #eef3fb;
+            --fg-dark: #ffffff;
+            --fg-light: #0b1220;
+            --light-bg: linear-gradient(135deg, #fdfdfd, #e8e8e8);
+            --dark-bg: linear-gradient(135deg, #1c1c1c, #2c2c2c);
+            --glow-light: rgba(0, 0, 0, 0.15);
+            --glow-dark: rgba(255, 255, 255, 0.12);
+            --icon-size: 44px;
         }
-      }
-    });
 
-    // close on resize to desktop
-    window.addEventListener('resize', ()=>{
-      if(window.innerWidth > 820 && mobilePanel.classList.contains('show')) closeMobilePanel();
-    });
+        /* Base theme: dark by default. Light theme toggles .light on body */
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            font-family: Inter, system-ui, Arial;
+            -webkit-font-smoothing: antialiased;
+        }
 
-    // mobile links -> scroll and close
-    document.querySelectorAll('.mobile-link').forEach(a=>{
-      a.addEventListener('click', (e)=>{
-        e.preventDefault();
-        const route = a.dataset.route;
-        scrollToSection(route);
-        closeMobilePanel();
-      });
-    });
+        body {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, var(--bg1-dark), var(--bg2-dark));
+            color: var(--fg-dark);
+            overflow: hidden;
+            /* only main scrolls */
+        }
 
-    // desktop nav links -> smooth scroll inside main
-    document.querySelectorAll('.nav-link').forEach(a=>{
-      a.addEventListener('click', (e)=>{
-        e.preventDefault();
-        const route = a.dataset.route;
-        scrollToSection(route);
-      });
-    });
+        body.light {
+            background: linear-gradient(135deg, var(--bg1-light), var(--bg2-light));
+            color: var(--fg-light);
+        }
 
-    /* ========== Hook up theme + language buttons ========== */
-    // Desktop theme toggle
-    document.getElementById('themeToggle').addEventListener('click', ()=>{
-      const cur = localStorage.getItem(LS_THEME) || 'dark';
-      const next = (cur === 'light') ? 'dark' : 'light';
-      setTheme(next);
-    });
+        /* Header: sticky top (fixed-like behavior), slight nuance from main bg */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-h);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 20px;
+            background: var(--light-bg);
+            box-shadow: 0 0 12px var(--glow-light);
+            z-index: 1000;
+            backdrop-filter: blur(6px);
+        }
 
-    // Mobile theme toggle inside panel
-    const themeToggleMobile = document.getElementById('themeToggleMobile');
-    if(themeToggleMobile){
-      themeToggleMobile.addEventListener('click', (e)=>{
-        e.stopPropagation();
-        const cur = localStorage.getItem(LS_THEME) || 'dark';
-        const next = (cur === 'light') ? 'dark' : 'light';
-        setTheme(next);
-      });
-    }
+        body.dark header {
+            background: var(--dark-bg);
+            box-shadow: 0 0 14px var(--glow-dark);
+        }
 
-    // language buttons (desktop)
-    document.querySelectorAll('.lang-btn').forEach(b=>{
-      b.addEventListener('click', (e)=>{
-        const lang = e.currentTarget.dataset.lang;
-        setLang(lang);
-      });
-    });
-    // mobile language buttons
-    document.querySelectorAll('.mobile-lang').forEach(b=>{
-      b.addEventListener('click', (e)=>{
-        const lang = e.currentTarget.dataset.lang;
-        setLang(lang);
-      });
-    });
+        .logo {
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
 
-    /* ========== Contact form mailto fallback ========== */
-    document.getElementById('contactForm').addEventListener('submit', function(e){
-      e.preventDefault();
-      const name = document.getElementById('cname').value.trim() || 'Client';
-      const email = document.getElementById('cemail').value.trim();
-      const message = document.getElementById('cmessage').value.trim();
-      const lang = localStorage.getItem(LS_LANG) || 'fr';
-      const subject = encodeURIComponent((lang === 'en' ? 'Website inquiry from ' : 'Demande depuis le site — ') + name);
-      const body = encodeURIComponent(`Nom: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
-      window.location.href = `mailto:info@melec.com?subject=${subject}&body=${body}`;
-    });
+        /* Header center nav */
+        .header-center {
+            flex: 1;
+            display: flex;
+            justify-content: center
+        }
 
-    /* ========== Init on load ========== */
-    (function init(){
-      const savedLang = localStorage.getItem(LS_LANG) || 'fr';
-      const savedTheme = localStorage.getItem(LS_THEME) || 'dark';
-      setTheme(savedTheme);
-      // mark desktop lang buttons data-lang property
-      document.querySelectorAll('.lang-btn').forEach(b=> {
-        // ensure dataset set (desktop use)
-        if(!b.dataset.lang && b.textContent) b.dataset.lang = b.textContent.trim().toLowerCase();
-      });
-      // mark mobile-lang dataset too
-      document.querySelectorAll('.mobile-lang').forEach(b=>{
-        if(!b.dataset.lang && b.textContent) b.dataset.lang = b.textContent.trim().toLowerCase();
-      });
+        nav {
+            display: flex;
+            align-items: center
+        }
 
-      setLang(savedLang);
+        ul.nav-desktop {
+            display: flex;
+            gap: 28px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            align-items: center
+        }
 
-      // ensure nav desktop labels updated (they have data-i18n)
-      applyTranslations(savedLang);
+        ul.nav-desktop a {
+            color: inherit;
+            text-decoration: none;
+            font-weight: 700;
+            padding: 8px 6px;
+            border-radius: 8px
+        }
 
-      // insert year
-      const year = document.getElementById('year');
-      if(year) year.textContent = new Date().getFullYear();
+        ul.nav-desktop a:focus,
+        ul.nav-desktop a:hover {
+            background: rgba(255, 255, 255, 0.02)
+        }
 
-      // if there is a hash on load, scroll to it inside main
-      if(location.hash){
-        const id = location.hash.replace('#','');
-        setTimeout(()=> { scrollToSection(id); }, 120);
-      }
-    })();
-  </script>
+        /* Desktop controls (theme + lang) */
+        .controls-desktop {
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .btn-circle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 0;
+            cursor: pointer;
+            width: 44px;
+            height: 44px;
+            font-weight: 700;
+            background: transparent;
+            color: inherit;
+        }
+
+        .btn-ghost {
+            padding: 8px 10px;
+            border-radius: 10px;
+            border: 0;
+            cursor: pointer;
+            font-weight: 700;
+            background: transparent;
+            color: inherit;
+        }
+
+        /* Hamburger */
+        .hamburger {
+            display: none;
+            border: 0;
+            background: transparent;
+            cursor: pointer;
+            padding: 8px
+        }
+
+        .hamburger .bar {
+            width: 26px;
+            height: 3px;
+            background: currentColor;
+            border-radius: 3px;
+            display: block;
+            margin: 3px 0
+        }
+
+        /* Main - fills between header & footer and is the only scrollable area */
+        main {
+            margin-top: var(--header-h);
+            margin-bottom: var(--footer-h);
+            height: calc(100vh - var(--header-h) - var(--footer-h));
+            overflow-y: auto;
+            -ms-overflow-style: none;
+            /* IE/Edge */
+            scrollbar-width: none;
+            /* Firefox */
+            scroll-behavior: smooth;
+            padding: 28px 20px;
+            max-width: 1100px;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        main::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Chrome/Safari */
+
+        /* Ensure sections won't be hidden under fixed header when scrolled to */
+        section {
+            scroll-margin-top: calc(var(--header-h) + 10px)
+        }
+
+        /* Content cards */
+        .hero {
+            min-height: 48vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            text-align: center;
+            border-radius: 12px;
+            padding: 36px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), transparent);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18)
+        }
+
+        .hero h1 {
+            font-size: clamp(28px, 6vw, 48px);
+            margin: 0;
+            letter-spacing: 1px
+        }
+
+        .muted {
+            color: rgba(255, 255, 255, 0.65)
+        }
+
+        body.light .muted {
+            color: rgba(0, 0, 0, 0.55)
+        }
+
+        .card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 18px;
+            color: var(--muted);
+        }
+
+        /* Services grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+            margin-top: 12px
+        }
+
+        .service-item {
+            padding: 14px;
+            border-radius: 10px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), transparent)
+        }
+
+        /* Footer - sticky bottom with same nuance but darker overlay */
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: var(--footer-h);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 20px;
+            background: var(--light-bg);
+            box-shadow: 0 0 12px var(--glow-light);
+            z-index: 900;
+        }
+
+        body.dark footer {
+            background: var(--dark-bg);
+            box-shadow: 0 0 14px var(--glow-dark);
+        }
+
+        .footer-left {
+            display: flex;
+            flex-direction: column;
+            gap: 6px
+        }
+
+        .footer-right {
+            min-width: 160px;
+            text-align: right;
+            color: var(--muted)
+        }
+
+        /* Footer icons: filled & bold */
+        .footer-icons {
+            display: flex;
+            gap: 18px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: nowrap;
+            overflow: hidden
+        }
+
+        .circle-icon {
+            flex: 0 1 auto;
+            width: clamp(var(--icon-size), 10vw, 84px);
+            height: clamp(var(--icon-size), 10vw, 84px);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(18px, 4vw, 28px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: transform .15s ease, opacity .12s;
+            border: 0;
+            text-decoration: none;
+        }
+
+        /* Icon colors invert depending on theme */
+        body:not(.light) .circle-icon {
+            background: #fff;
+            color: #111;
+        }
+
+        body.light .circle-icon {
+            background: #111;
+            color: #fff;
+        }
+
+        .circle-icon:active {
+            transform: translateY(1px)
+        }
+
+        .circle-icon:hover {
+            transform: translateY(-6px)
+        }
+
+        /* mobile menu panel (appears under header) */
+        .mobile-panel {
+            display: none;
+            position: fixed;
+            top: calc(var(--header-h) + 8px);
+            right: 12px;
+            z-index: 1200;
+            min-width: 240px;
+            max-width: 92vw;
+            background: linear-gradient(180deg, rgba(9, 4, 4, 0.671), rgba(51, 44, 44, 0.753));
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 22px 60px rgba(0, 0, 0, 0.678);
+            overflow: hidden;
+        }
+
+        .mobile-panel.show {
+            display: block;
+        }
+
+        .mobile-panel a {
+            display: block;
+            padding: 12px 8px;
+            color: inherit;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 8px
+        }
+
+        .mobile-panel a:hover {
+            background: rgba(255, 255, 255, 0.02)
+        }
+
+        .mobile-controls {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        /* hide desktop nav + controls on small screens */
+        @media (max-width:820px) {
+            ul.nav-desktop {
+                display: none;
+            }
+
+            .controls-desktop {
+                display: none;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            /* mobile panel shade tweak in light mode */
+            body.light .mobile-panel {
+                background: linear-gradient(180deg, rgb(138, 130, 130), rgb(103, 101, 95));
+                color: var(--fg-light);
+            }
+        }
+
+        /* tiny screens adjustments */
+        @media (max-width:420px) {
+            .hero {
+                padding: 22px
+            }
+
+            .footer-left {
+                display: none
+            }
+
+            .footer-right {
+                text-align: center;
+                width: 100%
+            }
+
+            .mobile-panel {
+                right: 8px;
+                left: 8px;
+                min-width: auto
+            }
+        }
+
+        /* Contact form styles */
+        .contact input,
+        .contact textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: inherit;
+            font-family: inherit;
+        }
+
+        body.light .contact input,
+        body.light .contact textarea {
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background: rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">MELEC</div>
+        <div class="header-center">
+            <nav aria-label="Main">
+                <ul class="nav-desktop" role="menubar" id="navDesktop">
+                    <li><a href="#home" class="nav-link" data-route="home" data-i18n="nav.home">Accueil</a></li>
+                    <li><a href="#services" class="nav-link" data-route="services" data-i18n="nav.services">Nos
+                            Services</a></li>
+                    <li><a href="#about" class="nav-link" data-route="about" data-i18n="nav.about">À Propos</a></li>
+                    <li><a href="#contact" class="nav-link" data-route="contact" data-i18n="nav.contact">Contact</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="controls-desktop" aria-hidden="false">
+            <button id="themeToggle" class="btn-circle" title="Toggle theme" aria-label="Toggle theme"><i id="themeIcon"
+                    class="fas fa-moon"></i></button>
+            <button class="btn-ghost lang-btn" data-lang="fr" aria-label="French">FR</button>
+            <button class="btn-ghost lang-btn" data-lang="en" aria-label="English">EN</button>
+            <button class="btn-ghost lang-btn" data-lang="ar" aria-label="Arabic">AR</button>
+        </div>
+        <button id="hamburgerBtn" class="hamburger" aria-label="Open menu" aria-expanded="false" title="Menu">
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </button>
+        <!-- mobile menu panel that contains nav + mobile controls (theme + lang) -->
+        <div id="mobilePanel" class="mobile-panel" aria-hidden="true" role="dialog" aria-label="Mobile menu">
+            <a href="#home" class="mobile-link" data-route="home" data-i18n="nav.home">Accueil</a>
+            <a href="#services" class="mobile-link" data-route="services" data-i18n="nav.services">Nos Services</a>
+            <a href="#about" class="mobile-link" data-route="about" data-i18n="nav.about">À Propos</a>
+            <a href="#contact" class="mobile-link" data-route="contact" data-i18n="nav.contact">Contact</a>
+            <div class="mobile-controls" style="margin-top:10px;">
+                <button id="themeToggleMobile" class="btn-circle" title="Toggle theme"
+                    aria-label="Toggle theme (mobile)">🌙</button>
+                <button class="btn-circle mobile-lang" data-lang="fr" aria-label="French">FR</button>
+                <button class="btn-circle mobile-lang" data-lang="en" aria-label="English">EN</button>
+                <button class="btn-circle mobile-lang" data-lang="ar" aria-label="Arabic">AR</button>
+            </div>
+        </div>
+    </header>
+    <main id="appMain" tabindex="0">
+        <!-- Home -->
+        <section id="home" class="hero">
+            <h1 data-i18n="hero.title">MELEC BUILDING</h1>
+            <p class="muted" data-i18n="hero.sub">Services électriques professionnels — installations, maintenance et
+                sécurité pour particuliers et entreprises.</p>
+            <div style="display:flex; gap:12px; margin-top:14px; justify-content:center; flex-wrap:wrap;">
+                <a class="btn-circle" href="#contact" onclick="scrollToSection('contact')"
+                    style="min-width:160px;">Demandez un devis</a>
+                <a class="btn-circle" href="#services" onclick="scrollToSection('services')"
+                    style="min-width:160px; background:var(--accent); color:#fff;">Voir nos services</a>
+            </div>
+        </section>
+        <!-- Services -->
+        <section id="services" class="card" aria-labelledby="servicesTitle">
+            <h2 id="servicesTitle" data-i18n="services.title">Nos Services</h2>
+            <p data-i18n="services.intro">Nous couvrons tous vos besoins électriques, du résidentiel au commercial, avec
+                sécurité et efficacité.</p>
+            <div class="services-grid" id="servicesGrid"></div>
+        </section>
+        <!-- About -->
+        <section id="about" class="card" aria-labelledby="aboutTitle">
+            <h2 id="aboutTitle" data-i18n="about.title">À propos de nous</h2>
+            <p id="aboutText" data-i18n="about.text">Melec Building réunit une équipe d'électriciens certifiés, dédiée à
+                la sécurité, la qualité et la transparence.</p>
+            <div style="display:flex; gap:12px; margin-top:14px; flex-wrap:wrap;">
+                <div style="flex:1; min-width:220px">
+                    <h4 data-i18n="about.missionTitle">Notre mission</h4>
+                    <p data-i18n="about.mission">Fournir des solutions électriques sûres, économes en énergie et
+                        adaptées à chaque projet.</p>
+                </div>
+                <div style="flex:1; min-width:220px">
+                    <h4 data-i18n="about.teamTitle">Notre équipe</h4>
+                    <p data-i18n="about.team">Techniciens certifiés, chefs de projet et support client réactif — prêts
+                        24/7 pour les urgences.</p>
+                </div>
+            </div>
+        </section>
+        <!-- Contact -->
+        <section id="contact" class="card" aria-labelledby="contactTitle">
+            <h2 id="contactTitle" data-i18n="contact.title">Contactez-nous</h2>
+            <p id="contactText" data-i18n="contact.text">Appelez-nous ou envoyez un message — on vous répond rapidement.
+            </p>
+            <div style="display:flex; gap:60px; flex-wrap:wrap; margin-top:12px;">
+                <div style="flex:1; min-width:260px;">
+                    <form id="contactForm" class="contact" aria-label="Contact form">
+                        <input id="cname" required placeholder="Votre nom" />
+                        <input id="cemail" type="email" required placeholder="Votre email" />
+                        <textarea id="cmessage" rows="5" required placeholder="Message"></textarea>
+                        <div style="display:flex; gap:8px; margin-top:8px;">
+                            <button type="submit" class="btn-circle" style="min-width:110px">Envoyer</button>
+                            <a href="tel:+212 0661661294" class="btn-circle" style="min-width:110px"
+                                aria-label="Call"><i class="fas fa-phone"></i></a>
+                        </div>
+                    </form>
+                </div>
+                <div style="flex:1; min-width:240px; color:var(--muted);">
+                    <strong data-i18n="contact.infoTitle">Infos</strong>
+                    <p style="margin:8px 0" data-i18n="contact.address">Casablanca, Maroc — <a
+                            href="https://maps.app.goo.gl/ikg8DnRbzTjawiR69" target="_blank"
+                            style="color:var(--accent)">Voir sur la carte</a></p>
+                    <p><span data-i18n="contact.phoneLabel">Téléphone:</span> <a href="tel:+2120661661294"
+                            style="color:inherit">+212 0 66 16 12 94</a></p>
+                    <p><span data-i18n="contact.hours">Horaires:</span> Lun–Dim: 08:00–20:00 (urgence 24/7)</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <div class="footer-left">
+            <div style="font-weight:800; color:var(--accent)">Melec Building</div>
+            <div style="color:var(--muted)">Électriciens certifiés — Qualité & sécurité</div>
+        </div>
+        <div class="footer-icons" role="toolbar" aria-label="Contact icons">
+            <a class="circle-icon" href="mailto:info@melec.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
+            <a class="circle-icon" href="tel:+2120661661294" aria-label="Phone"><i class="fas fa-phone"></i></a>
+            <a class="circle-icon" href="https://maps.app.goo.gl/ikg8DnRbzTjawiR69" target="_blank"
+                aria-label="Location"><i class="fas fa-map-marker-alt"></i></a>
+            <a class="circle-icon" href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a class="circle-icon" href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        </div>
+        <div class="footer-right">
+            <small style="color:var(--muted)">© <span id="year"></span> Melec Building</small>
+        </div>
+    </footer>
+    <script>
+        /* ========== Translations (nested) ========== */
+        const translations = {
+            fr: {
+                nav: { home: 'Accueil', services: 'Nos Services', about: 'À Propos', contact: 'Contact' },
+                hero: { title: 'MELEC BUILDING', sub: 'Services électriques professionnels — installations, maintenance et sécurité pour particuliers et entreprises.' },
+                services: {
+                    title: 'Nos Services', intro: 'Nous couvrons tous vos besoins électriques, du résidentiel au commercial, avec sécurité et efficacité.',
+                    items: [
+                        { title: 'Câblage résidentiel', desc: 'Installation, rénovation et mise à la terre pour la sécurité de votre foyer.' },
+                        { title: 'Installations commerciales', desc: 'Tableaux, câblage industriel et conformité aux normes.' },
+                        { title: 'Éclairage LED', desc: 'Conception et optimisation énergétique pour réduction des coûts.' },
+                        { title: 'Maintenance & dépannage', desc: 'Interventions rapides et sûres pour vos urgences électriques.' }
+                    ]
+                },
+                about: { title: 'À propos de nous', text: 'Melec Building réunit une équipe d\'électriciens certifiés, dédiée à la sécurité, la qualité et la transparence.', missionTitle: 'Notre mission', mission: 'Fournir des solutions électriques sûres, économes en énergie et adaptées à chaque projet.', teamTitle: 'Notre équipe', team: 'Techniciens certifiés, chefs de projet et support client réactif.' },
+                contact: { title: 'Contactez-nous', text: 'Appelez-nous ou envoyez un message — on vous répond rapidement.', infoTitle: 'Infos', address: 'Casablanca, Maroc', phoneLabel: 'Téléphone:', hours: 'Horaires:' }
+            },
+            en: {
+                nav: { home: 'Home', services: 'Our Services', about: 'About', contact: 'Contact' },
+                hero: { title: 'MELEC BUILDING', sub: 'Professional electrical services — installations, maintenance and safety for homes & businesses.' },
+                services: {
+                    title: 'Our Services', intro: 'We cover all electrical needs — residential to commercial — with safety and efficiency.',
+                    items: [
+                        { title: 'Residential Wiring', desc: 'Installation, rewiring and earthing for household safety.' },
+                        { title: 'Commercial Installations', desc: 'Panels, industrial wiring and compliance.' },
+                        { title: 'LED Lighting', desc: 'Energy-optimised lighting design & installation.' },
+                        { title: '24/7 Repairs', desc: 'Rapid, secure interventions for electrical emergencies.' }
+                    ]
+                },
+                about: { title: 'About Us', text: 'Melec Building brings together certified electricians committed to safety, quality and transparency.', missionTitle: 'Our mission', mission: 'Deliver reliable, energy-efficient electrical solutions tailored to every project.', teamTitle: 'Our team', team: 'Certified technicians, project leads and responsive customer support.' },
+                contact: { title: 'Contact Us', text: 'Call or message us — we\'ll get back to you quickly.', infoTitle: 'Info', address: 'Casablanca, Morocco', phoneLabel: 'Phone:', hours: 'Hours:' }
+            },
+            ar: {
+                nav: { home: 'الرئيسية', services: 'خدماتنا', about: 'معلومات عنا', contact: 'اتصل بنا' },
+                hero: { title: 'MELEC BUILDING', sub: 'خدمات كهربائية احترافية — تركيبات وصيانة وأمان للمنازل والشركات.' },
+                services: {
+                    title: 'خدماتنا', intro: 'نغطي جميع احتياجاتك الكهربائية، من السكنية إلى التجارية، بأعلى معايير الأمان.',
+                    items: [
+                        { title: 'التوصيلات السكنية', desc: 'تركيب وتجديد وتأريض لضمان أمان منزلك.' },
+                        { title: 'التركيبات التجارية', desc: 'لوحات وكابلات صناعية والتزام بالمعايير.' },
+                        { title: 'إضاءة LED', desc: 'تصميم وتركيب أنظمة إضاءة موفرة للطاقة.' },
+                        { title: 'خدمة الطوارئ 24/7', desc: 'استجابة سريعة وآمنة لحالات الطوارئ الكهربائية.' }
+                    ]
+                },
+                about: { title: 'معلومات عنا', text: 'Melec Building فريق من الفنيين المعتمدين ملتزمون بالأمان والجودة والشفافية.', missionTitle: 'مهمتنا', mission: 'تقديم حلول كهربائية آمنة وموفرة للطاقة ومصممة لكل مشروع.', teamTitle: 'فريقنا', team: 'فنيون معتمدون، رؤساء مشاريع ودعم عملاء سريع.' },
+                contact: { title: 'اتصل بنا', text: 'اتصل بنا أو أرسل رسالة — سنعود إليك بسرعة.', infoTitle: 'معلومات', address: 'الدار البيضاء، المغرب', phoneLabel: 'الهاتف:', hours: 'ساعات العمل:' }
+            }
+        };
+
+        /* ========== Utilities ========== */
+        function deepGet(obj, path) {
+            if (!obj || !path) return undefined;
+            return path.split('.').reduce((o, k) => (o && o[k] !== undefined) ? o[k] : undefined, obj);
+        }
+
+        const LS_LANG = 'melec_lang';
+        const LS_THEME = 'melec_theme';
+        const mainEl = document.getElementById('appMain');
+        const mobilePanel = document.getElementById('mobilePanel');
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+
+        /* ========== Apply translations ========== */
+        function applyTranslations(lang) {
+            const t = translations[lang] || translations.fr;
+            // update simple data-i18n keys
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                const val = deepGet(t, key);
+                if (val !== undefined) el.textContent = val;
+            });
+            // fill services grid
+            // fill services grid
+            const grid = document.getElementById('servicesGrid');
+            grid.innerHTML = '';
+            const items = deepGet(t, 'services.items') || [];
+            items.forEach(it => {
+                const d = document.createElement('div');
+                d.className = 'service-item';
+                d.innerHTML = `<h4>${it.title}</h4><p style="margin:6px 0 0;color:var(--muted);font-size:0.95rem">${it.desc}</p>`;
+                grid.appendChild(d);
+            });
+            // Update nav labels (desktop & mobile)
+            document.querySelectorAll('.nav-link').forEach(a => {
+                const route = a.dataset.route;
+                const key = `nav.${route}`;
+                const v = deepGet(t, key);
+                if (v) a.textContent = v;
+            });
+            document.querySelectorAll('.mobile-link').forEach(a => {
+                const route = a.dataset.route;
+                const key = `nav.${route}`;
+                const v = deepGet(t, key);
+                if (v) a.textContent = v;
+            });
+            // set HTML lang + dir
+            document.documentElement.lang = lang;
+            document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+            // set document.title
+            document.title = deepGet(t, 'hero.title') || 'Melec Building';
+        }
+
+        /* ========== Theme Handling ========== */
+        const themeIcon = document.getElementById('themeIcon');
+        function setTheme(theme) {
+            if (theme === 'light') {
+                document.body.classList.remove('dark');
+                document.body.classList.add('light');
+                themeIcon.className = 'fas fa-moon';
+                const mobIcon = document.getElementById('themeToggleMobile');
+                if (mobIcon) mobIcon.textContent = '🌙';
+            } else {
+                document.body.classList.remove('light');
+                document.body.classList.add('dark');
+                themeIcon.className = 'fas fa-sun';
+                const mobIcon = document.getElementById('themeToggleMobile');
+                if (mobIcon) mobIcon.textContent = '☀️';
+            }
+            localStorage.setItem(LS_THEME, theme);
+        }
+
+        /* ========== Language Handling ========== */
+        function setLang(lang) {
+            localStorage.setItem(LS_LANG, lang);
+            // visually mark buttons
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+            document.querySelectorAll('.mobile-lang').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+            applyTranslations(lang);
+        }
+
+        /* ========== Scroll helpers ========== */
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            // scroll within main container
+            el.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+            // if mobile panel open, close it
+            closeMobilePanel();
+        }
+
+        /* ========== Mobile panel open/close ========= */
+        function openMobilePanel() {
+            mobilePanel.classList.add('show');
+            mobilePanel.setAttribute('aria-hidden', 'false');
+            hamburgerBtn.setAttribute('aria-expanded', 'true');
+        }
+
+        function closeMobilePanel() {
+            mobilePanel.classList.remove('show');
+            mobilePanel.setAttribute('aria-hidden', 'true');
+            hamburgerBtn.setAttribute('aria-expanded', 'false');
+        }
+
+        function toggleMobilePanel() {
+            const is = mobilePanel.classList.toggle('show');
+            mobilePanel.setAttribute('aria-hidden', String(!is));
+            hamburgerBtn.setAttribute('aria-expanded', String(is));
+        }
+
+        // Hook up hamburger button
+        document.getElementById('hamburgerBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleMobilePanel();
+        });
+
+        // close panel on outside click
+        document.addEventListener('click', (e) => {
+            const panel = mobilePanel;
+            if (panel.classList.contains('show')) {
+                if (!panel.contains(e.target) && !hamburgerBtn.contains(e.target)) {
+                    closeMobilePanel();
+                }
+            }
+        });
+
+        // close on resize to desktop
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 820 && mobilePanel.classList.contains('show')) closeMobilePanel();
+        });
+
+        // mobile links -> scroll and close
+        document.querySelectorAll('.mobile-link').forEach(a => {
+            a.addEventListener('click', (e) => {
+                e.preventDefault();
+                const route = a.dataset.route;
+                scrollToSection(route);
+                closeMobilePanel();
+            });
+        });
+
+        // desktop nav links -> smooth scroll inside main
+        document.querySelectorAll('.nav-link').forEach(a => {
+            a.addEventListener('click', (e) => {
+                e.preventDefault();
+                const route = a.dataset.route;
+                scrollToSection(route);
+            });
+        });
+
+        /* ========== Hook up theme + language buttons ========== */
+        // Desktop theme toggle
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            const cur = localStorage.getItem(LS_THEME) || 'dark';
+            const next = (cur === 'light') ? 'dark' : 'light';
+            setTheme(next);
+        });
+
+        // Mobile theme toggle inside panel
+        const themeToggleMobile = document.getElementById('themeToggleMobile');
+        if (themeToggleMobile) {
+            themeToggleMobile.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const cur = localStorage.getItem(LS_THEME) || 'dark';
+                const next = (cur === 'light') ? 'dark' : 'light';
+                setTheme(next);
+            });
+        }
+
+        // language buttons (desktop)
+        document.querySelectorAll('.lang-btn').forEach(b => {
+            b.addEventListener('click', (e) => {
+                const lang = e.currentTarget.dataset.lang;
+                setLang(lang);
+            });
+        });
+
+        // mobile language buttons
+        document.querySelectorAll('.mobile-lang').forEach(b => {
+            b.addEventListener('click', (e) => {
+                const lang = e.currentTarget.dataset.lang;
+                setLang(lang);
+            });
+        });
+
+        /* ========== Contact form mailto fallback ========== */
+        document.getElementById('contactForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const name = document.getElementById('cname').value.trim() || 'Client';
+            const email = document.getElementById('cemail').value.trim();
+            const message = document.getElementById('cmessage').value.trim();
+            const lang = localStorage.getItem(LS_LANG) || 'fr';
+            const subject = encodeURIComponent((lang === 'en' ? 'Website inquiry from ' : 'Demande depuis le site — ') + name);
+            const body = encodeURIComponent(`Nom: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
+            window.location.href = `mailto:info@melec.com?subject=${subject}&body=${body}`;
+        });
+
+        /* ========== Init on load ========== */
+        (function init() {
+            const savedLang = localStorage.getItem(LS_LANG) || 'fr';
+            const savedTheme = localStorage.getItem(LS_THEME) || 'dark';
+            setTheme(savedTheme);
+            // mark desktop lang buttons data-lang property
+            document.querySelectorAll('.lang-btn').forEach(b => {
+                // ensure dataset set (desktop use)
+                if (!b.dataset.lang && b.textContent) b.dataset.lang = b.textContent.trim().toLowerCase();
+            });
+            // mark mobile-lang dataset too
+            document.querySelectorAll('.mobile-lang').forEach(b => {
+                if (!b.dataset.lang && b.textContent) b.dataset.lang = b.textContent.trim().toLowerCase();
+            });
+            setLang(savedLang);
+            // ensure nav desktop labels updated (they have data-i18n)
+            applyTranslations(savedLang);
+            // insert year
+            const year = document.getElementById('year');
+            if (year) year.textContent = new Date().getFullYear();
+            // if there is a hash on load, scroll to it inside main
+            if (location.hash) {
+                const id = location.hash.replace('#', '');
+                setTimeout(() => { scrollToSection(id); }, 120);
+            }
+        })();
+    </script>
 </body>
+
 </html>
