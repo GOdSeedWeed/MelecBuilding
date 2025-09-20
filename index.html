@@ -31,6 +31,7 @@
         body {
             height: 100%;
             margin: 0;
+            max-width: 100%;
             font-family: Inter, system-ui, Arial;
             -webkit-font-smoothing: antialiased;
         }
@@ -422,11 +423,24 @@
             border: 1px solid rgba(0, 0, 0, 0.1);
             background: rgba(0, 0, 0, 0.05);
         }
+
+        .sticky-top {
+            position: -webkit-sticky;
+            position: sticky;
+            width: 100vw;
+            top: 0;
+        }
+
+        .sticky-bottom {
+            margin-top: auto;
+            width: 100vw;
+            bottom: 0;
+        }
     </style>
 </head>
 
 <body>
-    <header>
+    <header class="sticky-top" role="banner">
         <div class="logo">MELEC</div>
         <div class="header-center">
             <nav aria-label="Main">
@@ -533,7 +547,7 @@
             </div>
         </section>
     </main>
-    <footer>
+    <footer class="sticky-bottom" role="contentinfo">
         <div class="footer-left">
             <div style="font-weight:800; color:var(--accent)">Melec Building</div>
             <div style="color:var(--muted)">Électriciens certifiés — Qualité & sécurité</div>
