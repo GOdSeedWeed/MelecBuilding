@@ -1171,9 +1171,7 @@
                     stat3: 'Clients Satisfaits',
                     stat4: 'Service d\'Urgence',
                     certified: 'Certifié & Assuré',
-                    certified: {
-                        desc: 'Tous nos électriciens sont certifiés et notre entreprise est entièrement assurée pour votre tranquillité d\'esprit'
-                    }
+                    'certified.desc': 'Tous nos électriciens sont certifiés et notre entreprise est entièrement assurée pour votre tranquillité d\'esprit'
                 },
                 contact: {
                     title: 'Contactez-Nous',
@@ -1182,9 +1180,7 @@
                     email: 'Email',
                     address: 'Adresse',
                     hours: 'Horaires',
-                    hours: {
-                        text: 'Lun-Sam: 8h-20h<br>Urgences: 24/7'
-                    }
+                    'hours.text': 'Lun-Sam: 8h-20h<br>Urgences: 24/7'
                 },
                 form: {
                     name: 'Nom Complet',
@@ -1195,9 +1191,7 @@
                 },
                 footer: {
                     about: 'À Propos',
-                    about: {
-                        text: 'MELEC Building - Votre expert en solutions électriques professionnelles depuis 2009.'
-                    },
+                    'about.text': 'MELEC Building - Votre expert en solutions électriques professionnelles depuis 2009.',
                     services: 'Services Rapides',
                     service1: 'Installation Électrique',
                     service2: 'Maintenance',
@@ -1266,9 +1260,7 @@
                     stat3: 'Satisfied Clients',
                     stat4: 'Emergency Service',
                     certified: 'Certified & Insured',
-                    certified: {
-                        desc: 'All our electricians are certified and our company is fully insured for your peace of mind'
-                    }
+                    'certified.desc': 'All our electricians are certified and our company is fully insured for your peace of mind'
                 },
                 contact: {
                     title: 'Contact Us',
@@ -1277,9 +1269,7 @@
                     email: 'Email',
                     address: 'Address',
                     hours: 'Hours',
-                    hours: {
-                        text: 'Mon-Sat: 8am-8pm<br>Emergencies: 24/7'
-                    }
+                    'hours.text': 'Mon-Sat: 8am-8pm<br>Emergencies: 24/7'
                 },
                 form: {
                     name: 'Full Name',
@@ -1290,9 +1280,7 @@
                 },
                 footer: {
                     about: 'About',
-                    about: {
-                        text: 'MELEC Building - Your expert in professional electrical solutions since 2009.'
-                    },
+                    'about.text': 'MELEC Building - Your expert in professional electrical solutions since 2009.',
                     services: 'Quick Services',
                     service1: 'Electrical Installation',
                     service2: 'Maintenance',
@@ -1361,9 +1349,7 @@
                     stat3: 'عملاء راضون',
                     stat4: 'خدمة الطوارئ',
                     certified: 'معتمد ومؤمن',
-                    certified: {
-                        desc: 'جميع الكهربائيين لدينا معتمدون وشركتنا مؤمنة بالكامل لراحة بالك'
-                    }
+                    'certified.desc': 'جميع الكهربائيين لدينا معتمدون وشركتنا مؤمنة بالكامل لراحة بالك'
                 },
                 contact: {
                     title: 'اتصل بنا',
@@ -1372,9 +1358,7 @@
                     email: 'البريد الإلكتروني',
                     address: 'العنوان',
                     hours: 'ساعات العمل',
-                    hours: {
-                        text: 'الإثنين-السبت: 8ص-8م<br>الطوارئ: 24/7'
-                    }
+                    'hours.text': 'الإثنين-السبت: 8ص-8م<br>الطوارئ: 24/7'
                 },
                 form: {
                     name: 'الاسم الكامل',
@@ -1385,15 +1369,16 @@
                 },
                 footer: {
                     about: 'عن الشركة',
-                    about: {
-                        text: 'MELEC Building - خبيرك في الحلول الكهربائية المهنية منذ 2009.'
-                    },
+                    'about.text': 'MELEC Building - خبيرك في الحلول الكهربائية المهنية منذ 2009.',
                     services: 'خدمات سريعة',
                     service1: 'التركيبات الكهربائية',
                     service2: 'الصيانة',
                     service3: 'الطوارئ 24/7',
                     follow: 'تابعنا',
                     rights: 'جميع الحقوق محفوظة.'
+                },
+                theme: {
+                    toggle: 'تبديل المظهر'
                 }
             }
         };
@@ -1420,23 +1405,32 @@
             
             // Update all elements with data-i18n
             document.querySelectorAll('[data-i18n]').forEach(el => {
-                const keys = el.getAttribute('data-i18n').split('.');
+                const path = el.getAttribute('data-i18n');
+                const keys = path.split('.');
                 let value = translations[lang];
+                
+                // Navigate through the translation object
                 for (const key of keys) {
-                    value = value[key];
+                    if (value && typeof value === 'object' && key in value) {
+                        value = value[key];
+                    } else {
+                        // Try with dot notation as a single key
+                        value = translations[lang][path];
+                        break;
+                    }
                 }
-                if (typeof value === 'string') {
+                
+                // Set the text content if we found a valid translation
+                if (value && typeof value === 'string') {
                     el.innerHTML = value;
-                } else if (value && value.text) {
-                    el.innerHTML = value.text;
-                } else if (value && value.desc) {
-                    el.innerHTML = value.desc;
                 }
             });
             
             // Update active language button
             document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+                if (btn && btn.classList) {
+                    btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+                }
             });
             
             // Render services
