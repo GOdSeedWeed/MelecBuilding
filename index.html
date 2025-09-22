@@ -847,6 +847,7 @@
 
         /* Notification banner */
         .notification {
+            display: none;
             position: fixed;
             top: var(--header-h);
             left: 50%;
@@ -862,6 +863,7 @@
         }
 
         .notification.show {
+            display: block;
             transform: translateX(-50%) translateY(20px);
         }
     </style>
@@ -1468,7 +1470,7 @@
             notification.classList.add('show');
             setTimeout(() => {
                 notification.classList.remove('show');
-            }, 3000);
+            }, 1000);
         }
 
         // Mobile menu handling
